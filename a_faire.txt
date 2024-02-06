@@ -1,0 +1,16 @@
+
+- API
+    OK userFixtures
+    - gérer l'auth json_login
+        - symfony
+        - api platform doc (ajouter route auth)
+    - créer les CRUD
+        - project
+        - skill
+    - comment
+    - answer
+
+
+- FRONT
+    - admin
+    - homepage
