@@ -3,8 +3,10 @@ namespace App\Controller\Skill;
 
 use App\Entity\Skill;
 use App\Service\Image\PicturePathResolver;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[AsController]
 class ReadSkillListController extends AbstractController
 {
     public function __construct(

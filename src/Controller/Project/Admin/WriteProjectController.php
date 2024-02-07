@@ -2,10 +2,12 @@
 namespace App\Controller\Project\Admin;
 
 use App\Entity\Project;
-use App\Entity\Skill;
 use App\Service\Image\PictureUploader;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+
+#[AsController]
 class WriteProjectController extends AbstractController
 {
     public function __construct(

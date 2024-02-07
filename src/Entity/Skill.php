@@ -17,6 +17,7 @@ use App\Controller\Skill\Admin\ReadSkillItemController;
 use App\Controller\Skill\Admin\WriteSkillController;
 use App\Controller\Skill\ReadSkillListController;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ApiResource(
@@ -67,21 +68,30 @@ class Skill
     #[Groups(['read:skill:list', 'admin:read:skill:item'])]
     private ?int $id = null;
 
+    
     #[ApiFilter(SearchFilter::class, strategy: 'partial')]
     #[Groups(['admin:read:skill:item', 'read:skill:list', 'admin:write:skill'])]
+    #[Assert\NotBlank(message: 'Le nom est obligatoire')]
+    #[Assert\Length(max: 200, maxMessage: '200 caractères maximum')]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
     #[Groups(['admin:read:skill:item', 'read:skill:list', 'admin:write:skill'])]
+    #[Assert\NotNull(message: 'La catégorie est obligatoire')]
+    #[Assert\Choice(choices: [
+        Skill::CAT_FRAMEWORKS, Skill::CAT_LANGUAGES, Skill::CAT_UTILS
+    ], message: 'Veuillez choisir parmis les options proposées')]
     #[ORM\Column(length: 255)]
     private ?string $category = null;
 
     #[Groups(['admin:read:skill:item', 'read:skill:list', 'admin:write:skill'])]
+    #[Assert\NotNull(message: 'La date est obligatoire')]
     #[ORM\Column]
     private ?\DateTimeImmutable $learnedAt = null;
 
     //IMAGE
     
+    #[Assert\File(maxSize: '500k', maxSizeMessage: 'Poids maximum autorisé : 500k', mimeTypes: ['image/jpeg', 'image/jpg'], mimeTypesMessage: 'Formats acceptés : jpeg, jpg')]
     #[Vich\UploadableField(mapping: 'skill_logo', fileNameProperty: 'logoName', size: 'logoSize')]
     private ?File $logoFile = null;
 

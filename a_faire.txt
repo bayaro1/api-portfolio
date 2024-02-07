@@ -1,20 +1,23 @@
 
 - API
     OK userFixtures
-    - gérer l'auth json_login
-        - symfony
-        - api platform doc (ajouter route auth)
-    - créer les CRUD
+    OK gérer l'auth json_login
+        OK symfony
+        OK api platform doc (ajouter route auth)
+    OK créer les CRUD
         IS_GRANTED(ROLE_ADMIN)
         OK skill
         OK project
-    - comment
-    - answer
-    - ajouter validation
-        - img size 
-        - etc...
-    - faire des fixtures (avec de vrais base64), et tester toutes les routes
+    OK comment
+    OK answer
+    OK faire des fixtures
+
+    OK ajouter validation
+        OK propriétés classiques
+        OK img size et mimetype 
+
 
 - FRONT
     - admin
     - homepage
+    - ajouter liip_imagine_bundle pour mettre des filtres pour les screenshots (show: pour la page show et index: pour le header)

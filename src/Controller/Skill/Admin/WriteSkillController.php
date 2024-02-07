@@ -3,8 +3,11 @@ namespace App\Controller\Skill\Admin;
 
 use App\Entity\Skill;
 use App\Service\Image\PictureUploader;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+
+#[AsController]
 class WriteSkillController extends AbstractController
 {
     public function __construct(

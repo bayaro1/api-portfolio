@@ -19,9 +19,11 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ApiResource(
+    paginationEnabled: false,
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => ['read:project:list']],
@@ -63,30 +65,40 @@ class Project
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: 'Le titre est obligatoire')]
+    #[Assert\Length(max: 200, maxMessage: '200 caractères maximum')]
     #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[Assert\NotBlank(message: 'Le type est obligatoire')]
+    #[Assert\Length(max: 200, maxMessage: '200 caractères maximum')]
     #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
 
+    #[Assert\NotBlank(message: 'L\'url est obligatoire')]
+    #[Assert\Length(max: 200, maxMessage: '200 caractères maximum')]
     #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
+    #[Assert\Length(max: 200, maxMessage: '250 caractères maximum')]
     #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(length: 255)]
     private ?string $shortDescription = null;
 
+    #[Assert\Length(max: 5000, maxMessage: '5000 caractères maximum')]
     #[Groups(['read:project:item', 'admin:write:project'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $longDescription = null;
 
+    #[Assert\NotNull(message: 'La date de début est obligatoire')]
     #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $startedAt = null;
 
+    #[Assert\NotNull(message: 'La date de fin est obligatoire')]
     #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $endAt = null;
@@ -102,6 +114,7 @@ class Project
     private ?\DateTimeImmutable $updatedAt = null;
 
     //screen_mobile
+    #[Assert\File(maxSize: '500k', maxSizeMessage: 'Poids maximum autorisé : 500k', mimeTypes: ['image/jpeg', 'image/jpg'], mimeTypesMessage: 'Formats acceptés : jpeg, jpg')]
     #[Vich\UploadableField(mapping: 'project_screen_mobile', fileNameProperty: 'screenMobileName', size: 'screenMobileSize')]
     private ?File $screenMobileFile = null;
 
@@ -119,6 +132,7 @@ class Project
     private ?string $screenMobilePath = null;
 
     //screen_desktop
+    #[Assert\File(maxSize: '500k', maxSizeMessage: 'Poids maximum autorisé : 500k', mimeTypes: ['image/jpeg', 'image/jpg'], mimeTypesMessage: 'Formats acceptés : jpeg, jpg')]
     #[Vich\UploadableField(mapping: 'project_screen_desktop', fileNameProperty: 'screenDesktopName', size: 'screenDesktopSize')]
     private ?File $screenDesktopFile = null;
 

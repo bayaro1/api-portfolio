@@ -5,7 +5,9 @@ use App\Entity\Skill;
 use App\Service\Image\PicturePathResolver;
 use App\Service\Image\PictureUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 
+#[AsController]
 class ReadSkillItemController extends AbstractController
 {
     public function __construct(
