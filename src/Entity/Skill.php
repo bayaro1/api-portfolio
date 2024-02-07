@@ -2,16 +2,20 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use DateTimeImmutable;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiFilter;
+use App\Repository\SkillRepository;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Post;
-use App\Repository\SkillRepository;
-use DateTimeImmutable;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\Skill\Admin\ReadSkillItemController;
+use App\Controller\Skill\Admin\WriteSkillController;
+use App\Controller\Skill\ReadSkillListController;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -19,13 +23,30 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     paginationEnabled: false,
     operations: [
         new GetCollection(
-            normalizationContext: ['groups' => ['read:skill:list']]
+            normalizationContext: ['groups' => ['read:skill:list']],
+            controller: ReadSkillListController::class //setLogoPath
+        ),
+        new Get(
+            uriTemplate: '/admin/skills/{id}',
+            security: 'is_granted("ROLE_ADMIN")',
+            normalizationContext: ['groups' => ['admin:read:skill:item']],
+            controller: ReadSkillItemController::class //setLogoBase64
         ),
         new Post(
-            security: 'is_granted("ROLE_ADMIN")'
+            uriTemplate: '/admin/skills',
+            security: 'is_granted("ROLE_ADMIN")',
+            stateless: false,
+            denormalizationContext: ['groups' => ['admin:write:skill']],
+            normalizationContext: ['groups' => ['admin:read:skill:item']],
+            controller: WriteSkillController::class //upload du logo
         ), 
         new Patch(
-            security: 'is_granted("ROLE_ADMIN")'
+            uriTemplate: '/admin/skills/{id}',
+            security: 'is_granted("ROLE_ADMIN")',
+            stateless: false,
+            denormalizationContext: ['groups' => ['admin:write:skill']],
+            normalizationContext: ['groups' => ['admin:read:skill:item']],
+            controller: WriteSkillController::class //upload du logo
         )
     ]
 )]
@@ -43,18 +64,19 @@ class Skill
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:skill:list', 'admin:read:skill:item'])]
     private ?int $id = null;
 
     #[ApiFilter(SearchFilter::class, strategy: 'partial')]
-    #[Groups(['read:skill:list'])]
+    #[Groups(['admin:read:skill:item', 'read:skill:list', 'admin:write:skill'])]
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[Groups(['read:skill:list'])]
+    #[Groups(['admin:read:skill:item', 'read:skill:list', 'admin:write:skill'])]
     #[ORM\Column(length: 255)]
     private ?string $category = null;
 
-    #[Groups(['read:skill:list'])]
+    #[Groups(['admin:read:skill:item', 'read:skill:list', 'admin:write:skill'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $learnedAt = null;
 
@@ -63,12 +85,16 @@ class Skill
     #[Vich\UploadableField(mapping: 'skill_logo', fileNameProperty: 'logoName', size: 'logoSize')]
     private ?File $logoFile = null;
 
+    #[Groups(['admin:read:skill:item', 'read:skill:list'])]
+    private ?string $logoPath = null;
+
+    #[Groups(['admin:read:skill:item', 'admin:write:skill'])]
     private ?string $logoBase64 = null;
 
-    #[Groups(['read:skill:list'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $logoName = null;
 
+    #[Groups(['admin:read:skill:item'])]
     #[ORM\Column(nullable: true)]
     private ?int $logoSize = null;
 
@@ -177,6 +203,18 @@ class Skill
     public function setLogoBase64(?string $logoBase64): static
     {
         $this->logoBase64 = $logoBase64;
+
+        return $this;
+    }
+
+    public function getLogoPath(): ?string
+    {
+        return $this->logoPath;
+    }
+
+    public function setLogoPath(string $logoPath): static
+    {
+        $this->logoPath = $logoPath;
 
         return $this;
     }

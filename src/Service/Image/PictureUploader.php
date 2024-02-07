@@ -3,36 +3,10 @@ namespace App\Service\Image;
 
 use App\Config\SiteConfig;
 use App\Entity\Picture;
-use App\Entity\TranslatableString;
-use App\Service\PicturePathResolver;
-use Exception;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PictureUploader
 {
-    public function __construct(
-        private Base64Util $base64Util,
-        private ValidatorInterface $validator,
-        private PicturePathResolver $picturePathResolver
-    )
-    {
-
-    }
-
-    public function uploadFile(File $file, TranslatableString $alt): Picture
-    {
-        $picture = new Picture;
-        $picture->setFile($file)
-                ->setFileSize($file->getSize())
-                ->setAlt($alt)
-                ->setCreatedAt($this->dateTimeGenerator->generateImmutable())
-                ;
-
-        return $picture;
-    }
-
     /**
      * Undocumented function
      *
@@ -40,47 +14,38 @@ class PictureUploader
      * @param string $originalName
      * @return Picture|null (null si base64 est invalide)
      */
-    public function uploadBase64(string $base64, string $originalName): ?Picture
+    public function uploadBase64(string $fullBase64String, string $originalName): ?UploadedFile
     {
-        $base64String = $this->base64Util->extractPureBase64String($base64);
-        if(!$base64String)
-        {
-            return null;
-        }
-        $imageFile = $this->base64Util->convertBase64ToUploadedFile($base64String, $originalName);
-        if(!$imageFile)
-        {
-            return null;
-        }
-
-        $this->validateMaxSize($imageFile);
-
-        $picture = new Picture;
-        $picture->setFile($imageFile)
-                ->setFileSize($imageFile->getSize())
-                ;
-
-        return $picture;
-    }
-
-    public function getPictureBase64(?Picture $picture): ?string 
-    {
-        if(!$picture)
-        {
-            return null;
-        }
-        $path = $this->picturePathResolver->getPath($picture);
-        $pureBase64 = $this->base64Util->convertPathToBase64($path);
+        //base64Content example :  data:img/jpeg;base64,/9jxmdMN...
+        $parts = explode(';base64,', $fullBase64String);
+        $base64String = $parts[1] ?? null;
         
-        return $this->base64Util->createPrefixedBase64String($pureBase64, 'jpeg');
+        $decodedString = base64_decode($base64String);
+        if(!$decodedString)
+        {
+            return null;
+        }
+        $tempFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'php' . substr(str_shuffle(str_repeat('AZERTYUIOPQSDFGHJKLMWXCVBN0123456789', 2)), 0, 5) . '.tmp';
+        
+        file_put_contents($tempFilePath, $decodedString);
+        $mimeType = null;
+        $error = null;
+        $test = true;
+
+        return new UploadedFile($tempFilePath, $originalName, $mimeType, $error, $test);
     }
 
-
-    private function validateMaxSize(UploadedFile $imageFile)
+    public function convertPathToBase64(string $path): ?string 
     {
-        if($imageFile->getSize() > SiteConfig::UPLOAD_MAX_SIZE)
-        {
-            throw new Exception(SiteConfig::UPLOAD_MAX_SIZE_MESSAGE);
-        }
+        $context = stream_context_create([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ],
+        ]);
+        $content = file_get_contents(SiteConfig::SITE_URL . $path, false, $context);
+        $pureBase64 = base64_encode($content);
+        
+        return 'data:img/jpeg;base64,' . $pureBase64;
     }
 }

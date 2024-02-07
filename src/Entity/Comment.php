@@ -6,10 +6,12 @@ use App\Service\DateTimeImmutableGenerator;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
+    #[Groups(['read:project:item'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -19,15 +21,19 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
 
+    #[Groups(['read:project:item'])]
     #[ORM\Column(length: 255)]
     private ?string $fullName = null;
 
+    #[Groups(['read:project:item'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $company = null;
 
+    #[Groups(['read:project:item'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
+    #[Groups(['read:project:item'])]
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 

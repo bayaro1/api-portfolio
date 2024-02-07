@@ -2,45 +2,96 @@
 
 namespace App\Entity;
 
-use App\Repository\ProjectRepository;
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\Get;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use App\Controller\Project\Admin\AdminReadProjectItemController;
+use App\Controller\Project\Admin\WriteProjectController;
+use App\Controller\Project\ReadProjectItemController;
+use App\Controller\Project\ReadProjectListController;
+use App\Repository\ProjectRepository;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['read:project:list']],
+            controller: ReadProjectListController::class //setPicturesPath
+        ),
+        new Get(
+            normalizationContext: ['groups' => ['read:project:item']],
+            controller: ReadProjectItemController::class //setPicturesPath
+        ),
+        new Get(
+            uriTemplate: '/admin/project/{id}',
+            security: 'is_granted("ROLE_ADMIN")',
+            normalizationContext: ['groups' => ['read:project:item', 'admin:read:project:item']],
+            controller: AdminReadProjectItemController::class //setPicturesBase64
+        ),
+        new Post(
+            uriTemplate: '/admin/project',
+            security: 'is_granted("ROLE_ADMIN")',
+            normalizationContext: ['groups' => ['read:project:item', 'admin:read:project:item']],
+            denormalizationContext: ['groups' => ['admin:write:project']],
+            controller: WriteProjectController::class //upload pictures
+        ),
+        new Patch(
+            uriTemplate: '/admin/project/{id}',
+            security: 'is_granted("ROLE_ADMIN")',
+            normalizationContext: ['groups' => ['read:project:item', 'admin:read:project:item']],
+            denormalizationContext: ['groups' => ['admin:write:project']],
+            controller: WriteProjectController::class //upload pictures
+        )
+    ]
+)]
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 #[Vich\Uploadable]
 class Project
 {
+    #[Groups(['read:project:list', 'read:project:item'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
 
+    #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
+    #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(length: 255)]
     private ?string $shortDescription = null;
 
+    #[Groups(['read:project:item', 'admin:write:project'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $longDescription = null;
 
+    #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $startedAt = null;
 
+    #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $endAt = null;
 
+    #[Groups(['read:project:item'])]
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'project', orphanRemoval: true)]
     private Collection $comments;
 
@@ -57,10 +108,15 @@ class Project
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $screenMobileName = null;
 
+    #[Groups(['admin:read:project:item'])]
     #[ORM\Column(nullable: true)]
     private ?int $screenMobileSize = null;
 
+    #[Groups(['admin:read:project:item', 'admin:write:project'])]
     private ?string $screenMobileBase64 = null;
+
+    #[Groups(['read:project:collection', 'read:project:item'])]
+    private ?string $screenMobilePath = null;
 
     //screen_desktop
     #[Vich\UploadableField(mapping: 'project_screen_desktop', fileNameProperty: 'screenDesktopName', size: 'screenDesktopSize')]
@@ -69,10 +125,15 @@ class Project
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $screenDesktopName = null;
     
+    #[Groups(['admin:read:project:item'])]
     #[ORM\Column(nullable: true)]
     private ?int $screenDesktopSize = null;
 
+    #[Groups(['admin:read:project:item', 'admin:write:project'])]
     private ?string $screenDesktopBase64 = null;
+
+    #[Groups(['read:project:collection', 'read:project:item'])]
+    private ?string $screenDesktopPath = null;
 
 
     public function __construct()
@@ -315,6 +376,30 @@ class Project
     public function setScreenDesktopBase64(?string $screenDesktopBase64): static
     {
         $this->screenDesktopBase64 = $screenDesktopBase64;
+
+        return $this;
+    }
+
+    public function getScreenDesktopPath(): ?string
+    {
+        return $this->screenDesktopPath;
+    }
+
+    public function setScreenDesktopPath(?string $screenDesktopPath): static
+    {
+        $this->screenDesktopPath = $screenDesktopPath;
+
+        return $this;
+    }
+
+    public function getScreenMobilePath(): ?string
+    {
+        return $this->screenMobilePath;
+    }
+
+    public function setScreenMobilePath(?string $screenMobilePath): static
+    {
+        $this->screenMobilePath = $screenMobilePath;
 
         return $this;
     }

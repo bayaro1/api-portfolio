@@ -6,11 +6,14 @@
         - api platform doc (ajouter route auth)
     - créer les CRUD
         IS_GRANTED(ROLE_ADMIN)
-        - skill
-        - project
+        OK skill
+        OK project
     - comment
     - answer
-
+    - ajouter validation
+        - img size 
+        - etc...
+    - faire des fixtures (avec de vrais base64), et tester toutes les routes
 
 - FRONT
     - admin
