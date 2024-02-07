@@ -5,8 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Metadata\Get;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
-use App\StateProvider\UserProvider;
 use ApiPlatform\Metadata\ApiResource;
+use App\ApiResource\StateProvider\UserProvider;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -16,7 +16,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
         new Get(
             uriTemplate: 'me',
             provider: UserProvider::class,
-            normalizationContext: ['groups' => ['read:me']]
+            normalizationContext: ['groups' => ['read:me']],
+            openapiContext: [
+                'summary' => 'Retrieve the current user',
+                'description' => 'Retrieve the current user if logged'
+            ]
         )
     ]
 )]

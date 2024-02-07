@@ -3,12 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\ProjectRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
+#[Vich\Uploadable]
 class Project
 {
     #[ORM\Id]
@@ -25,12 +29,6 @@ class Project
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $url = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Picture $screenMobile = null;
-
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Picture $screenDesktop = null;
-
     #[ORM\Column(length: 255)]
     private ?string $shortDescription = null;
 
@@ -45,6 +43,37 @@ class Project
 
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'project', orphanRemoval: true)]
     private Collection $comments;
+
+    //IMAGES
+    
+    //en cas de modification uniquement d'une image ce champ sera modifié : obligatoire pour que le changement d'image soit persisté
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    //screen_mobile
+    #[Vich\UploadableField(mapping: 'project_screen_mobile', fileNameProperty: 'screenMobileName', size: 'screenMobileSize')]
+    private ?File $screenMobileFile = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $screenMobileName = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $screenMobileSize = null;
+
+    private ?string $screenMobileBase64 = null;
+
+    //screen_desktop
+    #[Vich\UploadableField(mapping: 'project_screen_desktop', fileNameProperty: 'screenDesktopName', size: 'screenDesktopSize')]
+    private ?File $screenDesktopFile = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $screenDesktopName = null;
+    
+    #[ORM\Column(nullable: true)]
+    private ?int $screenDesktopSize = null;
+
+    private ?string $screenDesktopBase64 = null;
+
 
     public function __construct()
     {
@@ -88,30 +117,6 @@ class Project
     public function setUrl(?string $url): static
     {
         $this->url = $url;
-
-        return $this;
-    }
-
-    public function getScreenMobile(): ?Picture
-    {
-        return $this->screenMobile;
-    }
-
-    public function setScreenMobile(?Picture $screenMobile): static
-    {
-        $this->screenMobile = $screenMobile;
-
-        return $this;
-    }
-
-    public function getScreenDesktop(): ?Picture
-    {
-        return $this->screenDesktop;
-    }
-
-    public function setScreenDesktop(?Picture $screenDesktop): static
-    {
-        $this->screenDesktop = $screenDesktop;
 
         return $this;
     }
@@ -190,6 +195,126 @@ class Project
                 $comment->setProject(null);
             }
         }
+
+        return $this;
+    }
+
+    
+
+    public function getScreenMobileName(): ?string
+    {
+        return $this->screenMobileName;
+    }
+
+    public function setScreenMobileName(?string $screenMobileName): static
+    {
+        $this->screenMobileName = $screenMobileName;
+
+        return $this;
+    }
+
+    public function getScreenDesktopName(): ?string
+    {
+        return $this->screenDesktopName;
+    }
+
+    public function setScreenDesktopName(?string $screenDesktopName): static
+    {
+        $this->screenDesktopName = $screenDesktopName;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getScreenMobileFile(): ?File
+    {
+        return $this->screenMobileFile;
+    }
+
+    public function setScreenMobileFile(?File $screenMobileFile = null): static
+    {
+        $this->screenMobileFile = $screenMobileFile;
+
+        if(null !== $screenMobileFile)
+        {
+            $this->updatedAt = new DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    public function getScreenMobileSize(): ?int
+    {
+        return $this->screenMobileSize;
+    }
+
+    public function setScreenMobileSize(?int $screenMobileSize): static
+    {
+        $this->screenMobileSize = $screenMobileSize;
+
+        return $this;
+    }
+
+    public function getScreenMobileBase64(): ?string
+    {
+        return $this->screenMobileBase64;
+    }
+
+    public function setScreenMobileBase64(?string $screenMobileBase64): static
+    {
+        $this->screenMobileBase64 = $screenMobileBase64;
+
+        return $this;
+    }
+
+    public function getScreenDesktopFile(): ?File
+    {
+        return $this->screenDesktopFile;
+    }
+
+    public function setScreenDesktopFile(?File $screenDesktopFile = null): static
+    {
+        $this->screenDesktopFile = $screenDesktopFile;
+
+        if(null !== $screenDesktopFile)
+        {
+            $this->updatedAt = new DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    public function getScreenDesktopSize(): ?int
+    {
+        return $this->screenDesktopSize;
+    }
+
+    public function setScreenDesktopSize(?int $screenDesktopSize): static
+    {
+        $this->screenDesktopSize = $screenDesktopSize;
+
+        return $this;
+    }
+    
+    public function getScreenDesktopBase64(): ?string
+    {
+        return $this->screenDesktopBase64;
+    }
+
+    public function setScreenDesktopBase64(?string $screenDesktopBase64): static
+    {
+        $this->screenDesktopBase64 = $screenDesktopBase64;
 
         return $this;
     }

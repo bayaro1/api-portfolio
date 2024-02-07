@@ -1,5 +1,5 @@
 <?php
-namespace App\Helper;
+namespace App\Service;
 
 use DateTimeImmutable;
 use DateTimeZone;

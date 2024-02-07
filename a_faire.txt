@@ -5,8 +5,9 @@
         - symfony
         - api platform doc (ajouter route auth)
     - créer les CRUD
-        - project
+        IS_GRANTED(ROLE_ADMIN)
         - skill
+        - project
     - comment
     - answer
 
