@@ -21,6 +21,30 @@ class SkillRepository extends ServiceEntityRepository
         parent::__construct($registry, Skill::class);
     }
 
+    /**
+     * @return Skill[]
+     */
+    public function findFiltered(string $name = null, int $limit = 5)
+    {
+        $qb = $this->createQueryBuilder('s')
+                    ->orderBy('s.learnedAt', 'DESC')
+                    ;
+        if($name)
+        {
+            $qb
+                ->where('s.name LIKE :name')
+                ->setParameter('name', '%'.$name.'%')
+                ;
+        }
+        if($limit)
+        {
+            $qb->setMaxResults($limit);
+        }
+        return $qb->getQuery()
+                    ->getResult()
+                    ;
+    }
+
 //    /**
 //     * @return Skill[] Returns an array of Skill objects
 //     */

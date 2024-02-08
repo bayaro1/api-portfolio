@@ -27,6 +27,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => ['read:project:list']],
+            order: ['endAt' => 'DESC'],
             controller: ReadProjectListController::class //setPicturesPath
         ),
         new Get(
@@ -128,7 +129,7 @@ class Project
     #[Groups(['admin:read:project:item', 'admin:write:project'])]
     private ?string $screenMobileBase64 = null;
 
-    #[Groups(['read:project:collection', 'read:project:item'])]
+    #[Groups(['read:project:list', 'read:project:item'])]
     private ?string $screenMobilePath = null;
 
     //screen_desktop
@@ -146,7 +147,7 @@ class Project
     #[Groups(['admin:read:project:item', 'admin:write:project'])]
     private ?string $screenDesktopBase64 = null;
 
-    #[Groups(['read:project:collection', 'read:project:item'])]
+    #[Groups(['read:project:list', 'read:project:item'])]
     private ?string $screenDesktopPath = null;
 
 

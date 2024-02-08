@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\HttpFoundation\File\File;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use App\ApiResource\StateProvider\SkillProvider;
 use App\Controller\Skill\Admin\ReadSkillItemController;
 use App\Controller\Skill\Admin\WriteSkillController;
 use App\Controller\Skill\ReadSkillListController;
@@ -25,7 +26,21 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => ['read:skill:list']],
-            controller: ReadSkillListController::class //setLogoPath
+            controller: ReadSkillListController::class, //setLogoPath
+            provider: SkillProvider::class,
+            openapiContext: [
+                'parameters' => [
+                    [
+                        'in' => 'query',
+                        'name' => 'limit',
+                        'description' => 'Nombre maximum de skills à retourner',
+                        'schema' => [
+                            'type' => 'integer',
+                            'minimum' => 0
+                        ]
+                    ]
+                ]
+            ]
         ),
         new Get(
             uriTemplate: '/admin/skills/{id}',
