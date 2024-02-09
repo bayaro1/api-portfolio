@@ -16,16 +16,16 @@ class ReadProjectItemController extends AbstractController
         
     }
 
-    public function __invoke(Project $project): Project
+    public function __invoke(Project $data): Project
     {
-        if($screenMobilePath = $this->picturePathResolver->resolve($project, 'screenMobileFile'))
+        if($screenMobilePath = $this->picturePathResolver->resolve($data, 'screenMobileFile'))
         {
-            $project->setScreenMobilePath($screenMobilePath);
+            $data->setScreenMobilePath($screenMobilePath);
         }
-        if($screenDesktopPath = $this->picturePathResolver->resolve($project, 'screenDesktopFile'))
+        if($screenDesktopPath = $this->picturePathResolver->resolve($data, 'screenDesktopFile'))
         {
-            $project->setScreenDesktopPath($screenDesktopPath);
+            $data->setScreenDesktopPath($screenDesktopPath);
         }
-        return $project;
+        return $data;
     }
 }

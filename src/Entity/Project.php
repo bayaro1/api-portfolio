@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use App\ApiResource\StateProvider\LastProjectProvider;
 use App\Controller\Project\Admin\AdminReadProjectItemController;
 use App\Controller\Project\Admin\WriteProjectController;
 use App\Controller\Project\ReadProjectItemController;
@@ -35,24 +36,37 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             controller: ReadProjectItemController::class //setPicturesPath
         ),
         new Get(
+            uriTemplate: '/project/last',
+            openapiContext: [
+                'summary' => 'Retrieve last project',
+                'description' => 'Retrieve last project'
+            ],
+            normalizationContext: ['groups' => ['read:project:item']],
+            provider: LastProjectProvider::class,
+            controller: ReadProjectItemController::class //setPicturesPath
+        ),
+        new Get(
             uriTemplate: '/admin/project/{id}',
             security: 'is_granted("ROLE_ADMIN")',
             normalizationContext: ['groups' => ['read:project:item', 'admin:read:project:item']],
-            controller: AdminReadProjectItemController::class //setPicturesBase64
+            controller: AdminReadProjectItemController::class, //setPicturesBase64
+            stateless: false
         ),
         new Post(
             uriTemplate: '/admin/project',
             security: 'is_granted("ROLE_ADMIN")',
             normalizationContext: ['groups' => ['read:project:item', 'admin:read:project:item']],
             denormalizationContext: ['groups' => ['admin:write:project']],
-            controller: WriteProjectController::class //upload pictures
+            controller: WriteProjectController::class, //upload pictures
+            stateless: false
         ),
         new Patch(
             uriTemplate: '/admin/project/{id}',
             security: 'is_granted("ROLE_ADMIN")',
             normalizationContext: ['groups' => ['read:project:item', 'admin:read:project:item']],
             denormalizationContext: ['groups' => ['admin:write:project']],
-            controller: WriteProjectController::class //upload pictures
+            controller: WriteProjectController::class, //upload pictures
+            stateless: false
         )
     ]
 )]
@@ -104,7 +118,6 @@ class Project
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $endAt = null;
 
-    #[Groups(['read:project:item'])]
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'project', orphanRemoval: true)]
     private Collection $comments;
 
