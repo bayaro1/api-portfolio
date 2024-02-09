@@ -65,6 +65,7 @@ class Comment
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    #[Groups(['read:comment:list'])]
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'comment', orphanRemoval: true)]
     private Collection $answers;
 

@@ -37,27 +37,28 @@ class Answer
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['read:comment:list'])]
     #[ORM\Column(options: ['default' => 0])]
     private ?bool $byAdmin = false;
 
-    #[Groups(['write:answer'])]
+    #[Groups(['write:answer', 'read:comment:list'])]
     #[Assert\NotBlank(message: 'Veuillez entrer votre nom')]
     #[Assert\Length(max: 200, maxMessage: '200 caractères maximum')]
     #[ORM\Column(length: 255)]
     private ?string $fullName = null;
 
-    #[Groups(['write:answer'])]
+    #[Groups(['write:answer', 'read:comment:list'])]
     #[Assert\Length(max: 200, maxMessage: '200 caractères maximum')]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $company = null;
 
-    #[Groups(['write:answer'])]
+    #[Groups(['write:answer', 'read:comment:list'])]
     #[Assert\NotBlank(message: 'Veuillez écrire un message')]
     #[Assert\Length(max: 2000, maxMessage: '2000 caractères maximum')]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[Groups(['write:answer'])]
+    #[Groups(['write:answer', 'read:comment:list'])]
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
