@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
@@ -66,6 +67,11 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             normalizationContext: ['groups' => ['read:project:item', 'admin:read:project:item']],
             denormalizationContext: ['groups' => ['admin:write:project']],
             controller: WriteProjectController::class, //upload pictures
+            stateless: false
+        ),
+        new Delete(
+            uriTemplate: '/admin/project',
+            security: 'is_granted("ROLE_ADMIN")',
             stateless: false
         )
     ]

@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\HttpFoundation\File\File;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Delete;
 use App\ApiResource\StateProvider\SkillProvider;
 use App\Controller\Skill\Admin\ReadSkillItemController;
 use App\Controller\Skill\Admin\WriteSkillController;
@@ -45,6 +46,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         new Get(
             uriTemplate: '/admin/skills/{id}',
             security: 'is_granted("ROLE_ADMIN")',
+            stateless: false,
             normalizationContext: ['groups' => ['admin:read:skill:item']],
             controller: ReadSkillItemController::class //setLogoBase64
         ),
@@ -63,6 +65,11 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             denormalizationContext: ['groups' => ['admin:write:skill']],
             normalizationContext: ['groups' => ['admin:read:skill:item']],
             controller: WriteSkillController::class //upload du logo
+        ),
+        new Delete(
+            uriTemplate: '/admin/skills',
+            security: 'is_granted("ROLE_ADMIN")',
+            stateless: false
         )
     ]
 )]
