@@ -70,7 +70,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             stateless: false
         ),
         new Delete(
-            uriTemplate: '/admin/project',
+            uriTemplate: '/admin/project/{id}',
             security: 'is_granted("ROLE_ADMIN")',
             stateless: false
         )

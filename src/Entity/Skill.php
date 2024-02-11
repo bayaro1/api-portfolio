@@ -67,7 +67,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             controller: WriteSkillController::class //upload du logo
         ),
         new Delete(
-            uriTemplate: '/admin/skills',
+            uriTemplate: '/admin/skills/{id}',
             security: 'is_granted("ROLE_ADMIN")',
             stateless: false
         )
