@@ -88,7 +88,7 @@ class Project
 
     #[Assert\NotBlank(message: 'Le titre est obligatoire')]
     #[Assert\Length(max: 200, maxMessage: '200 caractères maximum')]
-    #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
+    #[Groups(['read:project:list', 'read:project:item', 'admin:write:project', 'admin:read:comment:list'])]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 

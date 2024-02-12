@@ -13,6 +13,7 @@ use App\Service\DateTimeImmutableGenerator;
 use App\Controller\UGC\WriteAnswerController;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\Delete;
+use App\ApiResource\StateProcessor\AnswerProcessor;
 use DateTimeImmutable;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -29,7 +30,20 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['write:answer']],
             controller: WriteAnswerController::class,
             security: 'is_granted("ROLE_ADMIN")',
-            stateless: false
+            stateless: false,
+            openapiContext: [
+                'parameters' => [
+                    [
+                        'in' => 'query',
+                        'name' => 'commentId',
+                        'description' => 'Id du commentaire auquel on souhaite répondre',
+                        'schema' => [
+                            'type' => 'integer',
+                            'minimum' => 0
+                        ]
+                    ]
+                ]
+            ]
         ),
         new Delete(
             uriTemplate: '/admin/answers/{id}',
@@ -44,6 +58,7 @@ class Answer
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read:comment:list'])]
     private ?int $id = null;
 
     #[Groups(['read:comment:list'])]
@@ -67,7 +82,7 @@ class Answer
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[Groups(['write:answer', 'read:comment:list'])]
+    #[Groups(['read:comment:list'])]
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 

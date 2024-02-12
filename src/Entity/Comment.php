@@ -29,6 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/admin/comments/all',
             order: ['createdAt' => 'DESC'],
             paginationEnabled: false,
+	    normalizationContext: ['groups' => ['read:comment:list', 'admin:read:comment:list']]
         ),
         new Post(
             denormalizationContext: ['groups' => ['write:comment']]
@@ -50,7 +51,7 @@ class Comment
     private ?int $id = null;
 
     #[ApiFilter(SearchFilter::class, strategy: 'exact')]
-    #[Groups(['write:comment'])]
+    #[Groups(['write:comment', 'admin:read:comment:list'])]
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
