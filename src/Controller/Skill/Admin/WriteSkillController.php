@@ -21,7 +21,7 @@ class WriteSkillController extends AbstractController
     {
         if($logoBase64 = $skill->getLogoBase64())
         {
-            $uploadableFile = $this->pictureUploader->uploadBase64($logoBase64, 'logo.jpg');
+            $uploadableFile = $this->pictureUploader->uploadBase64($logoBase64, 'logo.png');
             $skill->setLogoFile($uploadableFile);
         }
         return $skill;

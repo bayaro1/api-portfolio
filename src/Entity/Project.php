@@ -98,7 +98,6 @@ class Project
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
 
-    #[Assert\NotBlank(message: 'L\'url est obligatoire')]
     #[Assert\Length(max: 200, maxMessage: '200 caractères maximum')]
     #[Groups(['read:project:list', 'read:project:item', 'admin:write:project'])]
     #[ORM\Column(length: 255, nullable: true)]

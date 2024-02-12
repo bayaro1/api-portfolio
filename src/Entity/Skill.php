@@ -113,7 +113,7 @@ class Skill
 
     //IMAGE
     
-    #[Assert\File(maxSize: '500k', maxSizeMessage: 'Poids maximum autorisé : 500k', mimeTypes: ['image/jpeg', 'image/jpg'], mimeTypesMessage: 'Formats acceptés : jpeg, jpg')]
+    #[Assert\File(maxSize: '500k', maxSizeMessage: 'Poids maximum autorisé : 500k', mimeTypes: ['image/png'], mimeTypesMessage: 'Formats acceptés : png')]
     #[Vich\UploadableField(mapping: 'skill_logo', fileNameProperty: 'logoName', size: 'logoSize')]
     private ?File $logoFile = null;
 
