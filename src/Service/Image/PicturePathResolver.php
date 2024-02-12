@@ -9,7 +9,7 @@ class PicturePathResolver
 {
     public function __construct(
         private UploaderHelper $helper,
-        // private CacheManager $imagineCacheManager
+        private CacheManager $imagineCacheManager
     )
     {
 
@@ -21,10 +21,10 @@ class PicturePathResolver
         {
             $path = $resolvedPath;
         }
-        // if($filter)
-        // {
-        //     return $this->imagineCacheManager->getBrowserPath($path, $filter);
-        // }
+        if($filter)
+        {
+            return $this->imagineCacheManager->getBrowserPath($path, $filter);
+        }
         return $path;
     }
 }
