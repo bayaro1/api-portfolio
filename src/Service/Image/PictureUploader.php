@@ -35,7 +35,14 @@ class PictureUploader
         return new UploadedFile($tempFilePath, $originalName, $mimeType, $error, $test);
     }
 
-    public function convertPathToBase64(string $path): ?string 
+    /**
+     * Dans cette appli, j'utilise systématiquement l'url complète de l'image à la place du path (plus pratique pour le front)
+     * donc ici le path vaut par exemple : https://localhost:8000/img/default.png
+     *
+     * @param string $path
+     * @return string|null
+     */
+    public function convertPathToBase64(string $path, string $format = 'jpeg'): ?string 
     {
         $context = stream_context_create([
             'ssl' => [
@@ -43,9 +50,9 @@ class PictureUploader
                 'verify_peer_name' => false,
             ],
         ]);
-        $content = file_get_contents(SiteConfig::SITE_URL . $path, false, $context);
+        $content = file_get_contents($path, false, $context);
         $pureBase64 = base64_encode($content);
         
-        return 'data:img/jpeg;base64,' . $pureBase64;
+        return 'data:img/'.$format.';base64,' . $pureBase64;
     }
 }

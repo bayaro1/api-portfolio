@@ -2,6 +2,7 @@
 namespace App\Service\Image;
 
 use App\Entity\Picture;
+use App\Config\SiteConfig;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
@@ -16,7 +17,7 @@ class PicturePathResolver
     }
     public function resolve(?Object $uploadable, string $fileProperty, string $filter = null): string
     {
-        $path = '/img/default.jpg';
+        $path = '/img/default.png';
         if($resolvedPath = $this->helper->asset($uploadable, $fileProperty))
         {
             $path = $resolvedPath;
@@ -25,6 +26,6 @@ class PicturePathResolver
         {
             return $this->imagineCacheManager->getBrowserPath($path, $filter);
         }
-        return $path;
+        return SiteConfig::SITE_URL . $path;
     }
 }

@@ -24,7 +24,7 @@ class ReadSkillItemController extends AbstractController
         if($logoPath = $this->picturePathResolver->resolve($skill, 'logoFile'))
         {
             //on configure la propriété skill.logoBase64
-            $logoBase64 = $this->pictureUploader->convertPathToBase64($logoPath);
+            $logoBase64 = $this->pictureUploader->convertPathToBase64($logoPath, 'png');
             $skill->setLogoBase64($logoBase64);
         }
         return $skill;
