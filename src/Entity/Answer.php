@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\GetCollection;
 use App\Service\DateTimeImmutableGenerator;
 use App\Controller\UGC\WriteAnswerController;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Delete;
 use DateTimeImmutable;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,8 +25,16 @@ use Symfony\Component\Validator\Constraints as Assert;
             paginationMaximumItemsPerPage: 5,
         ),
         new Post(
+            uriTemplate: '/admin/answers',
             denormalizationContext: ['groups' => ['write:answer']],
-            controller: WriteAnswerController::class
+            controller: WriteAnswerController::class,
+            security: 'is_granted("ROLE_ADMIN")',
+            stateless: false
+        ),
+        new Delete(
+            uriTemplate: '/admin/answers/{id}',
+            security: 'is_granted("ROLE_ADMIN")',
+            stateless: false
         )
     ]
 )]

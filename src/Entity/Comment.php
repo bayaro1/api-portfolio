@@ -12,6 +12,7 @@ use App\Repository\CommentRepository;
 use ApiPlatform\Metadata\GetCollection;
 use App\Service\DateTimeImmutableGenerator;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Post;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -22,10 +23,20 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => ['read:comment:list']],
             order: ['createdAt' => 'DESC'],
             paginationClientItemsPerPage: true,
-            paginationMaximumItemsPerPage: 10,
+            paginationMaximumItemsPerPage: 20,
+        ),
+        new GetCollection(
+            uriTemplate: '/admin/comments/all',
+            order: ['createdAt' => 'DESC'],
+            paginationEnabled: false,
         ),
         new Post(
             denormalizationContext: ['groups' => ['write:comment']]
+        ),
+        new Delete(
+            uriTemplate: '/admin/comments/{id}',
+            security: 'is_granted("ROLE_ADMIN")',
+            stateless: false
         )
     ]
 )]
