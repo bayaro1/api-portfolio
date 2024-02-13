@@ -22,10 +22,10 @@ class PicturePathResolver
         {
             $path = $resolvedPath;
         }
-        if($filter)
-        {
-            return $this->imagineCacheManager->getBrowserPath($path, $filter);
-        }
+        // if($filter)
+        // {
+        //     return $this->imagineCacheManager->getBrowserPath($path, $filter);
+        // }
         return SiteConfig::SITE_URL . $path;
     }
 }

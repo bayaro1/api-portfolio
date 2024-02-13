@@ -13,7 +13,6 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.0",
         "fakerphp/faker": "^1.23",
-        "liip/imagine-bundle": "^2.12",
         "nelmio/cors-bundle": "^2.4",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.25",
@@ -42,9 +41,6 @@
         "symfony/web-profiler-bundle": "7.0.*"
     },
     "config": {
-        "platform": {
-            "ext-gd": "*"
-        },
         "allow-plugins": {
             "php-http/discovery": true,
             "symfony/flex": true,

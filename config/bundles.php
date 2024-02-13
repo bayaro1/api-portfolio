@@ -12,5 +12,5 @@ return [
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
     Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
     Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
+    // Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
 ];
