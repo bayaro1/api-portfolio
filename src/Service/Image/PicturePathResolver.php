@@ -3,14 +3,14 @@ namespace App\Service\Image;
 
 use App\Entity\Picture;
 use App\Config\SiteConfig;
-use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+// use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 class PicturePathResolver
 {
     public function __construct(
         private UploaderHelper $helper,
-        private CacheManager $imagineCacheManager
+        // private CacheManager $imagineCacheManager
     )
     {
 
