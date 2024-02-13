@@ -38,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username;
 
     #[Groups(['read:me'])]
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'array')]
     private array $roles = [];
 
     #[ORM\Column(type: 'string')]
