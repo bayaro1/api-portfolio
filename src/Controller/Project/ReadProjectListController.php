@@ -24,11 +24,11 @@ class ReadProjectListController extends AbstractController
     {
         foreach($data as $project)
         {
-            if($screenMobilePath = $this->picturePathResolver->resolve($project, 'screenMobileFile', 'index'))
+            if($screenMobilePath = $this->picturePathResolver->resolve($project, 'screenMobileFile'))
             {
                 $project->setScreenMobilePath($screenMobilePath);
             }
-            if($screenDesktopPath = $this->picturePathResolver->resolve($project, 'screenDesktopFile', 'index'))
+            if($screenDesktopPath = $this->picturePathResolver->resolve($project, 'screenDesktopFile'))
             {
                 $project->setScreenDesktopPath($screenDesktopPath);
             }
